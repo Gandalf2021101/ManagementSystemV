@@ -155,7 +155,7 @@ void adminWindow::openTable()
     selModel=new QItemSelectionModel(tabModel,this);
     selModel_=new QItemSelectionModel(tabModel_,this);
     selModel_c=new QItemSelectionModel(tabModel_c,this);
-    selModel_i=new QItemSelectionModel(tabModel_i,this);
+
 
 
     // 2.连接槽函数用引用，且不用参数和括号
@@ -172,11 +172,7 @@ void adminWindow::openTable()
     connect(selModel_,&QItemSelectionModel::currentRowChanged,
             this,&adminWindow::do_currentRowChanged);
 
-    connect(selModel_i,&QItemSelectionModel::currentChanged,
-            this,&adminWindow::do_currentChanged);
-    //当前行变化时发射currentRowChanged()信号
-    connect(selModel_i,&QItemSelectionModel::currentRowChanged,
-            this,&adminWindow::do_currentRowChanged);
+
 
 
 
@@ -249,13 +245,6 @@ void adminWindow::openTable()
 
     dataMapper_->toFirst();
 
-
-    dataMapper_i=new QDataWidgetMapper(this);
-    dataMapper_i->setModel(tabModel_i);
-    dataMapper_i->setSubmitPolicy(QDataWidgetMapper::AutoSubmit);
-    //dataMapper_->addMapping(ui->dbComboDep,tabModel->fieldIndex("Department"));
-    dataMapper_i->addMapping(ui->plainTextEdit,tabModel_i->fieldIndex("content"));
-    dataMapper_i->toFirst();
 
 
 

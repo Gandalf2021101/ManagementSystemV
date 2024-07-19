@@ -73,41 +73,9 @@ void StuWindow::openTable()
         qDebug()<<"okk";
     }
 
-    tabModel_i=new QSqlRelationalTableModel(this,DB);
-    tabModel_i->setTable("inform");
-    tabModel_i->setEditStrategy(QSqlTableModel::OnManualSubmit);
-    tabModel_i->setSort(tabModel_i->fieldIndex("informID"),Qt::AscendingOrder);
-    if(!tabModel_i->select()){
-        QMessageBox::critical(this, "错误信息",
-                              "打开数据表错误,错误信息:\n"+tabModel_i->lastError().text());
-                                  return;
-    }
-
-    tabModel_i->setHeaderData(tabModel_i->fieldIndex("informID"),Qt::Horizontal,"通知编号");
-    tabModel_i->setHeaderData(tabModel_i->fieldIndex("releaseDate"),Qt::Horizontal,"发布时间");
-    tabModel_i->setHeaderData(tabModel_i->fieldIndex("title"),Qt::Horizontal,"通知标题");
-    tabModel_i->setHeaderData(tabModel_i->fieldIndex("content"),Qt::Horizontal,"通知详情");
-
-
-    selModel_i=new QItemSelectionModel(tabModel_i,this);
-    connect(selModel_i,&QItemSelectionModel::currentChanged,
-            this,&StuWindow::do_currentChanged);
-    //当前行变化时发射currentRowChanged()信号
-    connect(selModel_i,&QItemSelectionModel::currentRowChanged,
-            this,&StuWindow::do_currentRowChanged);
 
 
 
-    ui->tableView_i->setModel(tabModel_i);
-    ui->tableView_i->setSelectionModel(selModel_i);
-    ui->tableView_i->setColumnHidden(tabModel_i->fieldIndex("content"),true);
-
-    dataMapper_i=new QDataWidgetMapper(this);
-    dataMapper_i->setModel(tabModel_i);
-    dataMapper_i->setSubmitPolicy(QDataWidgetMapper::AutoSubmit);
-    //dataMapper_->addMapping(ui->dbComboDep,tabModel->fieldIndex("Department"));
-    dataMapper_i->addMapping(ui->textEdit_i,tabModel_i->fieldIndex("content"));
-    dataMapper_i->toFirst();
 
 
     //-----
