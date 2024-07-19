@@ -145,7 +145,20 @@ void adminWindow::openTable()
     tabModel_c->setHeaderData(tabModel_c->fieldIndex("credit"),Qt::Horizontal,"学分");
     tabModel_c->setHeaderData(tabModel_c->fieldIndex("cpno"),Qt::Horizontal,"先修课程");
 
+    tabModel_i=new QSqlRelationalTableModel(this,DB);
+    tabModel_i->setTable("inform");
+    tabModel_i->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    tabModel_i->setSort(tabModel_i->fieldIndex("informID"),Qt::AscendingOrder);
+    if(!tabModel_i->select()){
+        QMessageBox::critical(this, "错误信息",
+                              "打开数据表错误,错误信息:\n"+tabModel_i->lastError().text());
+                                  return;
+    }
 
+    tabModel_i->setHeaderData(tabModel_i->fieldIndex("informID"),Qt::Horizontal,"通知编号");
+    tabModel_i->setHeaderData(tabModel_i->fieldIndex("releaseDate"),Qt::Horizontal,"发布时间");
+    tabModel_i->setHeaderData(tabModel_i->fieldIndex("title"),Qt::Horizontal,"通知标题");
+    tabModel_i->setHeaderData(tabModel_i->fieldIndex("content"),Qt::Horizontal,"通知详情");
 
 
 
@@ -155,7 +168,7 @@ void adminWindow::openTable()
     selModel=new QItemSelectionModel(tabModel,this);
     selModel_=new QItemSelectionModel(tabModel_,this);
     selModel_c=new QItemSelectionModel(tabModel_c,this);
-
+    selModel_i=new QItemSelectionModel(tabModel_i,this);
 
 
     // 2.连接槽函数用引用，且不用参数和括号
@@ -172,7 +185,11 @@ void adminWindow::openTable()
     connect(selModel_,&QItemSelectionModel::currentRowChanged,
             this,&adminWindow::do_currentRowChanged);
 
-
+    connect(selModel_i,&QItemSelectionModel::currentChanged,
+            this,&adminWindow::do_currentChanged);
+    //当前行变化时发射currentRowChanged()信号
+    connect(selModel_i,&QItemSelectionModel::currentRowChanged,
+            this,&adminWindow::do_currentRowChanged);
 
 
 
@@ -245,6 +262,13 @@ void adminWindow::openTable()
 
     dataMapper_->toFirst();
 
+
+    dataMapper_i=new QDataWidgetMapper(this);
+    dataMapper_i->setModel(tabModel_i);
+    dataMapper_i->setSubmitPolicy(QDataWidgetMapper::AutoSubmit);
+    //dataMapper_->addMapping(ui->dbComboDep,tabModel->fieldIndex("Department"));
+    dataMapper_i->addMapping(ui->plainTextEdit,tabModel_i->fieldIndex("content"));
+    dataMapper_i->toFirst();
 
 
 
